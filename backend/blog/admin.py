@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from blog.models import Profile, Post, Tag
+from .models import *
 
 
 @admin.register(Profile)
