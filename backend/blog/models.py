@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.shortcuts import reverse
 
 
 class Profile(models.Model):
@@ -37,3 +38,6 @@ class Post(models.Model):
 
     author = models.ForeignKey(Profile, on_delete=models.PROTECT)
     tags = models.ManyToManyField(Tag, blank=True)
+
+    def get_absolute_url(self):
+        return reverse("blog:post", kwargs={"slug": self.slug})
