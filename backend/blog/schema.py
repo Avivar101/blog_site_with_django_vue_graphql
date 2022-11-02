@@ -26,27 +26,44 @@ class TagType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
-    all_post = graphene.List(PostType)
+    all_posts = graphene.List(PostType)
     author_by_username = graphene.Field(AuthorType, username=graphene.String())
     post_by_slug = graphene.Field(PostType, slug=graphene.String())
     posts_by_author = graphene.List(PostType, username=graphene.String())
     posts_by_tag = graphene.List(PostType, tag=graphene.String())
 
-    def resolve_all_posts(root, info):
+    def resolve_all_posts(self, info):
         return (
             models.Post.objects.prefetch_related("tags")
             .selected_related("author")
             .all()
         )
 
-    def resolve_author_by_username(root, info, username):
-        return ()
+    def resolve_author_by_username(self, info, username):
+        return models.Profile.objects.select_related("user").get(
+           user__username=username
+        )
 
-    def resolve_post_by_slug(self):
-        pass
+    def resolve_post_by_slug(self, info, slug):
+        return (
+            models.Post.objects.prefetch_related("tags")
+            .select_related("author")
+            .get(slug=slug)
+        )
 
-    def resolve_posts_by_author(self):
-        pass
+    def resolve_posts_by_author(self, info, username):
+        return (
+            models.Post.objects.prefetch_related("tags")
+            .select_related("author")
+            .filter(author__name__username=username)
+        )
 
-    def resolve_posts_by_tag(self):
-        pass
+    def resolve_posts_by_tag(self, info, tag):
+        return (
+            models.Post.objects.prefetch_related("tags")
+            .select_related("author")
+            .filter(tags__name__iexact=tag)
+        )
+
+
+schema = graphene.Schema(query=Query)
