@@ -33,7 +33,11 @@ class Query(graphene.ObjectType):
     posts_by_tag = graphene.List(PostType, tag=graphene.String())
 
     def resolve_all_posts(root, info):
-        return Post.objects.all()
+        return (
+            Post.objects.prefetch_related("tags")
+                .select_related("author")
+                .all()
+        )
 
     def resolve_author_by_username(root, info, username):
         return Profile.objects.select_related("user").get(
@@ -43,22 +47,22 @@ class Query(graphene.ObjectType):
     def resolve_post_by_slug(root, info, slug):
         return (
             Post.objects.prefetch_related("tags")
-            .select_related("author")
-            .get(slug=slug)
+                .select_related("author")
+                .get(slug=slug)
         )
 
     def resolve_posts_by_author(root, info, username):
         return (
             Post.objects.prefetch_related("tags")
-            .select_related("author")
-            .filter(author__name__username=username)
+                .select_related("author")
+                .filter(author__name__username=username)
         )
 
     def resolve_posts_by_tag(root, info, tag):
         return (
             Post.objects.prefetch_related("tags")
-            .select_related("author")
-            .filter(tags__name__iexact=tag)
+                .select_related("author")
+                .filter(tags__name__iexact=tag)
         )
 
 
