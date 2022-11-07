@@ -26,6 +26,7 @@ class TagType(DjangoObjectType):
 
 
 class Query(graphene.ObjectType):
+    hello = graphene.String(default_value="hello")
     all_posts = graphene.List(PostType)
     author_by_username = graphene.Field(AuthorType, username=graphene.String())
     post_by_slug = graphene.Field(PostType, slug=graphene.String())
@@ -41,7 +42,7 @@ class Query(graphene.ObjectType):
 
     def resolve_author_by_username(root, info, username):
         return Profile.objects.select_related("user").get(
-           user__username=username
+            user__username=username
         )
 
     def resolve_post_by_slug(root, info, slug):
@@ -52,10 +53,9 @@ class Query(graphene.ObjectType):
         )
 
     def resolve_posts_by_author(root, info, username):
-        return (
-            Post.objects.prefetch_related("tags")
+        return (Post.objects.prefetch_related("tags")
                 .select_related("author")
-                .filter(author__name__username=username)
+                .filter(author__user__username=username)
         )
 
     def resolve_posts_by_tag(root, info, tag):
