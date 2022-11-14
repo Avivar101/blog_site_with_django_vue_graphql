@@ -162,4 +162,4 @@ GRAPHENE = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:8080",)
+CORS_ORIGIN_WHITELIST = ("http://127.0.0.1:8080", "http://okeziebenj.pythonanywhere.com",)
