@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 
     'authapp.apps.AuthappConfig',
     'blog.apps.BlogConfig',
+    'ckeditor',
 
     'allauth',
     'allauth.account',

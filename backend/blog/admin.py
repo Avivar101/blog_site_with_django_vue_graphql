@@ -18,6 +18,17 @@ class TagAdmin(admin.ModelAdmin):
 
 # admin.site.register(Tag, TagAdmin)
 
+@admin.register(Category)
+class CatAdmin(admin.ModelAdmin):
+    model = Category
+
+    list_display = (
+        "id",
+        "name",
+        "subname",
+        "slug",
+    )
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
